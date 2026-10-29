@@ -3,7 +3,7 @@
  * A função é injetada no n8n via sanitizar.toString(): não pode usar nada de fora dela, exceto COLS.
  * Testes em test/sanitizar.test.ts.
  */
-export const COLS = ["Data/hora","ID","Nome","E-mail","Empresa","Cargo","WhatsApp","Setor","Faturamento","Quem produz","Peças/mês","Custo da estrutura","Horas/peça","% montagem","Dias de fila","Peças sem fila","Mãos que publicam","O que trava","Já escapou","Posição sobre IA","Custo/peça","Custo/hora","Horas de montagem/mês","Piso","Teto","Recursos equivalentes","Farol dinheiro","Score marca","Farol marca","Veredicto","Pediu sessão","Vídeo assistido (%)","Números ajustados","Origem (?o=)","UTMs","Dispositivo"];
+export const COLS = ["QUESTIONARIO","Maturidade geral","Maior dor","Nota maior dor","Valor em risco/ano","Risco (%)","Flow","Insights","Teams","Composer","CX","Respostas Maestro","Data/hora","ID","Nome","E-mail","Empresa","Cargo","WhatsApp","Setor","Faturamento","Quem produz","Peças/mês","Custo da estrutura","Horas/peça","% montagem","Dias de fila","Peças sem fila","Mãos que publicam","O que trava","Já escapou","Posição sobre IA","Custo/peça","Custo/hora","Horas de montagem/mês","Piso","Teto","Recursos equivalentes","Farol dinheiro","Score marca","Farol marca","Veredicto","Pediu sessão","Vídeo assistido (%)","Números ajustados","Origem (?o=)","UTMs","Dispositivo"];
 
 export function sanitizar(body) {
   const rejeitar = { _acao: 'rejeitar' };
@@ -35,9 +35,11 @@ export function sanitizar(body) {
     return { _acao: 'atualizar', ID: id, ...out };
   }
 
-  const out = {};
+  const origem = linha.QUESTIONARIO || 'questionario';
+  if (!['questionario', 'responda', 'sejamaestro', 'sejamaestroindividual'].includes(origem)) return rejeitar;
+  const out = { QUESTIONARIO: origem };
   for (const [k, v] of Object.entries(linha)) {
-    if (!COLS.includes(k) || k === 'ID' || k === 'WhatsApp' || k === 'Data/hora') continue;
+    if (!COLS.includes(k) || k === 'QUESTIONARIO' || k === 'ID' || k === 'WhatsApp' || k === 'Data/hora') continue;
     out[k] = typeof v === 'number' ? (isFinite(v) ? v : '') : texto(v);
   }
   if (!out['Nome'] || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(out['E-mail'] || ''))) return rejeitar;
