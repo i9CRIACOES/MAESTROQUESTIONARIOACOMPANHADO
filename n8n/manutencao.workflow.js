@@ -1,6 +1,6 @@
 import { workflow, node, trigger, expr } from '@n8n/workflow-sdk';
 
-const COLS = ["Data/hora","ID","Nome","E-mail","Empresa","Cargo","WhatsApp","Setor","Faturamento","Quem produz","Peças/mês","Custo da estrutura","Horas/peça","% montagem","Dias de fila","Peças sem fila","Mãos que publicam","O que trava","Já escapou","Posição sobre IA","Custo/peça","Custo/hora","Horas de montagem/mês","Piso","Teto","Recursos equivalentes","Farol dinheiro","Score marca","Farol marca","Veredicto","Pediu sessão","Vídeo assistido (%)","Números ajustados","Origem (?o=)","UTMs","Dispositivo"];
+import { COLS } from './sanitizar.mjs';
 
 const PLANILHA = 'CONFIGURE_SPREADSHEET_ID';
 const CREDENCIAL = { googleSheetsOAuth2Api: { id: 'CONFIGURE_GOOGLE_SHEETS_CREDENTIAL', name: 'Google Sheets account' } };
@@ -14,7 +14,7 @@ const cabecalho = node({
     name: 'Escrever cabeçalho',
     parameters: {
       method: 'PUT',
-      url: `https://sheets.googleapis.com/v4/spreadsheets/${PLANILHA}/values/P%C3%A1gina1!A1:AJ1?valueInputOption=RAW`,
+      url: `https://sheets.googleapis.com/v4/spreadsheets/${PLANILHA}/values/P%C3%A1gina1!A1:AV1?valueInputOption=RAW`,
       authentication: 'predefinedCredentialType',
       nodeCredentialType: 'googleSheetsOAuth2Api',
       sendBody: true,
